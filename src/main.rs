@@ -4,7 +4,7 @@ use std::ffi::c_void;
 pub const AF_INET: i32 = 2;
 pub const AF_INET6: i32 = 10;
 pub const SOCK_STREAM: i32 = 1;
-pub const IPPRPTO_TCP: i32 = 6;
+pub const IPPROTO_TCP: i32 = 6;
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
@@ -74,7 +74,7 @@ fn main() {
 
         // server
         unsafe {
-            let socket = socket(AF_INET, SOCK_STREAM, IPPRPTO_TCP);
+            let socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
             if socket < 0 {
                 panic!("last OS error: {:?}", Error::last_os_error());
             }
@@ -136,7 +136,7 @@ fn main() {
 
     // client
     unsafe {
-        let socket = socket(AF_INET, SOCK_STREAM, IPPRPTO_TCP);
+        let socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if socket < 0 {
             panic!("last OS error: {:?}", Error::last_os_error());
         }

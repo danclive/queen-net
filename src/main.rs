@@ -60,8 +60,8 @@ extern {
     pub fn close(sockfd: i32) -> i32;
     pub fn getsockname(sockfd: i32, localaddr: *mut sockaddr, addrlen: *mut u32) -> i32;
     pub fn getpeername(sockfd: i32, peeraddr: *mut sockaddr, addrlen: *mut u32) -> i32;
-    pub fn read(fd: i32, buf: *mut c_void, count: isize) -> i32;
-    pub fn write(fd: i32, buf: *const c_void, count: isize) -> i32;
+    pub fn read(fd: i32, buf: *mut c_void, count: usize) -> isize;
+    pub fn write(fd: i32, buf: *const c_void, count: usize) -> isize;
 }
 
 fn main() {
@@ -109,7 +109,7 @@ fn main() {
                 thread::spawn(move || {
                     loop {
                         let mut buf = [0u8; 64];
-                        let n = read(client_socket, &mut buf as *mut _ as *mut c_void, buf.len() as isize);
+                        let n = read(client_socket, &mut buf as *mut _ as *mut c_void, buf.len());
                         if n <= 0 {
                             break;
                         }
@@ -117,7 +117,7 @@ fn main() {
                         println!("{:?}", String::from_utf8_lossy(&buf[0..n as usize]));
 
                         let msg = b"Hi, client!";
-                        let n = write(client_socket, msg as *const _ as *const c_void, msg.len() as isize);
+                        let n = write(client_socket, msg as *const _ as *const c_void, msg.len());
                         if n <= 0 {
                             break;
                         }
@@ -157,14 +157,14 @@ fn main() {
         }
 
         let msg = b"Hello, server!";
-        let n = write(socket, msg as *const _ as *const c_void, msg.len() as isize);
+        let n = write(socket, msg as *const _ as *const c_void, msg.len());
         if n <= 0 {
             println!("last OS error: {:?}", Error::last_os_error());
             close(socket);
         }
 
         let mut buf = [0u8; 64];
-        let n = read(socket, &mut buf as *mut _ as *mut c_void, buf.len() as isize);
+        let n = read(socket, &mut buf as *mut _ as *mut c_void, buf.len());
         if n <= 0 {
             println!("last OS error: {:?}", Error::last_os_error());
         }
